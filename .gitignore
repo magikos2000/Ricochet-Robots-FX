@@ -1,3 +1,9 @@
+# Ignore All
 *
+*/
+
+# Except
 !src/*
+!src/
 !build.gradle
+src/.DS_Store
