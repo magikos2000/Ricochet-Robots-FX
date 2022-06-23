@@ -1,0 +1,29 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.12'
+}
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = '17'
+targetCompatibility = '17'
+
+application {
+    mainClass = 'ricochetrobotsfx.Main'
+}
+
+javafx {
+    version = '17.0.2'
+    modules = ['javafx.controls']
+}
+
+dependencies {
+
+}
+
+test {
+    useJUnitPlatform()
+}
