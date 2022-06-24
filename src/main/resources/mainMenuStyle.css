@@ -1,0 +1,23 @@
+.root{
+    -fx-background-color: #111111;
+}
+
+.menu-bar{
+    -fx-background-color: yellow;
+}
+
+.menu{
+    -fx-border-color: red;
+}
+
+.button{
+    -fx-background-color: green;
+    -fx-font-family: "Calibri";
+    -fx-font-size: 20;
+    -fx-pref-width: 500;
+    -fx-cursor: hand;
+}
+
+.button:focused{
+    -fx-background-color: blue;
+}
