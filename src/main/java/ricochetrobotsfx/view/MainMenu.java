@@ -26,7 +26,9 @@ public class MainMenu {
         pane.setTop(menuBar);
 
         Button btn1 = new Button("I'm feeling lucky!");
+        btn1.setOnAction(event -> sceneController.switchTo("Feeling Lucky"));
         Button btn2 = new Button("LAN play");
+        btn2.setOnAction(event -> sceneController.switchTo("LAN Play"));
         Button btn3 = new Button("Solve this for me");
         btn3.setOnAction(event -> sceneController.activate("Solver"));
         Button btn4 = new Button("Exit");
