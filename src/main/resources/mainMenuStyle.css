@@ -1,23 +1,27 @@
-.root{
-    -fx-background-color: #111111;
+.root {
+    -fx-background-image: url("1.png");
+    -fx-background-size: 120%;
 }
 
-.menu-bar{
-    -fx-background-color: yellow;
+.menu-bar {
+    -fx-background-color: rgba(255, 255, 255, 0.5);
 }
 
-.menu{
-    -fx-border-color: red;
+.menu-item {
+    -fx-background-color: lightpink;
 }
 
-.button{
-    -fx-background-color: green;
-    -fx-font-family: "Calibri";
+.menu-item:focused {
+    -fx-background-color: deeppink;
+}
+
+.button {
+    -fx-background-color: lightpink;
     -fx-font-size: 20;
-    -fx-pref-width: 500;
+    -fx-pref-width: 400;
     -fx-cursor: hand;
 }
 
-.button:focused{
-    -fx-background-color: blue;
+.button:focused {
+    -fx-background-color: deeppink;
 }

@@ -29,12 +29,10 @@ public class MainMenu {
         btn1.setOnAction(event -> sceneController.switchTo("Feeling Lucky"));
         Button btn2 = new Button("LAN play");
         btn2.setOnAction(event -> sceneController.switchTo("LAN Play"));
-        Button btn3 = new Button("Solve this for me");
-        btn3.setOnAction(event -> sceneController.activate("Solver"));
-        Button btn4 = new Button("Exit");
-        btn4.setOnAction(event -> Platform.exit());
+        Button btn3 = new Button("Exit");
+        btn3.setOnAction(event -> Platform.exit());
 
-        VBox vbox = new VBox(btn1, btn2, btn3, btn4);
+        VBox vbox = new VBox(btn1, btn2, btn3);
         vbox.setSpacing(10);
         vbox.setAlignment(Pos.CENTER);
         pane.setCenter(vbox);
