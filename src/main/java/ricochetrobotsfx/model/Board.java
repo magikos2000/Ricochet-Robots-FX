@@ -1,7 +1,10 @@
 package ricochetrobotsfx.model;
 
+import java.util.Random;
+
 public class Board {
     private byte[][] board = new byte[16][16];
+    private byte[][] spec = new byte[16][16]; // prism + goals
 
     /*
     0 - blank;
@@ -124,4 +127,138 @@ public class Board {
             {{0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0},{0,0,0,7,0,0,0,0},{0,0,0,0,0,2,0,0},
                     {0,0,13,0,0,0,0,0},{0,0,0,0,12,0,0,0},{0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0}}
     };
+
+    // rotate clockwise
+    private void rotateArray(byte[][] board) {
+        byte temp;
+        for (int i = 0; i < 7; i++)
+            for (int j = 0; j < 7-i; j++) {
+                temp = board[i][j];
+                board[i][j] = board[7-j][7-i];
+                board[7-j][7-i] = temp;
+            }
+
+        for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 8; j++) {
+                temp = board[i][j];
+                board[i][j] = board[7-i][j];
+                board[7-i][j] = temp;
+            }
+    }
+
+    private void rotateWall(byte[][] board) {
+        for (int i = 0; i < 8; i++)
+            for (int j = 0; j < 8; j++) {
+                if (1 <= board[i][j] && board[i][j] <= 4) {
+                    board[i][j] ++;
+                    if (board[i][j] > 4) board[i][j] = 1;
+                }
+                else if (5 <= board[i][j] && board[i][j] <= 8) {
+                    board[i][j] ++;
+                    if (board[i][j] > 8) board[i][j] = 5;
+                }
+                else if (9 <= board[i][j] && board[i][j] <= 10) {
+                    board[i][j] ++;
+                    if (board[i][j] > 10) board[i][j] = 9;
+                }
+            }
+    }
+
+    private void rotatePrism(byte[][] spec) {
+        for (int i = 0; i < 8; i++)
+            for (int j = 0; j < 8; j++) {
+                if (spec[i][j] == 17) spec[i][j] = 18;
+                if (spec[i][j] == 18) spec[i][j] = 17;
+                if (spec[i][j] == 19) spec[i][j] = 20;
+                if (spec[i][j] == 20) spec[i][j] = 19;
+                if (spec[i][j] == 21) spec[i][j] = 22;
+                if (spec[i][j] == 22) spec[i][j] = 21;
+                if (spec[i][j] == 23) spec[i][j] = 24;
+                if (spec[i][j] == 24) spec[i][j] = 23;
+            }
+    }
+
+    private void rotateBoard(byte[][] board, int times) {
+        for (int i = 0; i < times; i++) {
+            rotateArray(board);
+            rotateWall(board);
+        }
+    }
+
+    private void rotateSpec(byte[][] spec, int times) {
+        for (int i = 0; i < times; i++) {
+            rotateArray(spec);
+            rotatePrism(spec);
+        }
+    }
+
+    public Board() {
+        Random random = new Random();
+        int[][] parts = new int[4][2]; // 4 boards * (board number + A/B)
+        boolean repetition;
+        for (int i = 0; i < 4; i++) {
+            do {
+                parts[i][0] = random.nextInt(8);
+                repetition = false;
+                for (int j = 0; j < i; j++)
+                    if (parts[j][0] == parts[i][0]) {
+                        repetition = true;
+                        break;
+                    }
+            } while (repetition);
+            parts[i][1] = random.nextInt(2);
+        }
+
+        byte[][] temp;
+
+        // generate board
+        temp = boardTemplates[(parts[0][0]<<1)+parts[0][1]].clone();
+        rotateBoard(temp, 0);
+        for (int i = 0; i < 8; i++)
+            System.arraycopy(temp[i], 0, board[i], 0, 8);
+
+        temp = boardTemplates[(parts[1][0]<<1)+parts[1][1]].clone();
+        rotateBoard(temp, 1);
+        for (int i = 0; i < 8; i++)
+            System.arraycopy(temp[i], 0, board[i], 8, 8);
+
+        temp = boardTemplates[(parts[2][0]<<1)+parts[2][1]].clone();
+        rotateBoard(temp, 2);
+        for (int i = 0; i < 8; i++)
+            System.arraycopy(temp[i], 0, board[i + 8], 8, 8);
+
+        temp = boardTemplates[(parts[3][0]<<1)+parts[3][1]].clone();
+        rotateBoard(temp, 3);
+        for (int i = 0; i < 8; i++)
+            System.arraycopy(temp[i], 0, board[i + 8], 0, 8);
+
+        // generate spec
+        temp = specTemplates[(parts[0][0]<<1)+parts[0][1]].clone();
+        rotateSpec(temp, 0);
+        for (int i = 0; i < 8; i++)
+            System.arraycopy(temp[i], 0, spec[i], 0, 8);
+
+        temp = specTemplates[(parts[1][0]<<1)+parts[1][1]].clone();
+        rotateSpec(temp, 1);
+        for (int i = 0; i < 8; i++)
+            System.arraycopy(temp[i], 0, spec[i], 8, 8);
+
+        temp = specTemplates[(parts[2][0]<<1)+parts[2][1]].clone();
+        rotateSpec(temp, 2);
+        for (int i = 0; i < 8; i++)
+            System.arraycopy(temp[i], 0, spec[i + 8], 8, 8);
+
+        temp = specTemplates[(parts[3][0]<<1)+parts[3][1]].clone();
+        rotateSpec(temp, 3);
+        for (int i = 0; i < 8; i++)
+            System.arraycopy(temp[i], 0, spec[i + 8], 0, 8);
+    }
+
+    public byte[][] getBoard() {
+        return board;
+    }
+
+    public byte[][] getSpec() {
+        return spec;
+    }
 }
