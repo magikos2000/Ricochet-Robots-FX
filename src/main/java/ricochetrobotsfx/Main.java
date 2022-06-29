@@ -1,12 +1,15 @@
 package ricochetrobotsfx;
 
 import javafx.application.Application;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import ricochetrobotsfx.controller.SceneController;
 import ricochetrobotsfx.view.FeelingLucky;
 import ricochetrobotsfx.view.LANPlay;
 import ricochetrobotsfx.view.MainMenu;
 import ricochetrobotsfx.view.Solver;
+
+import java.util.Objects;
 
 public class Main extends Application {
 
@@ -30,6 +33,8 @@ public class Main extends Application {
 
         sceneController.switchTo("Main Menu");
         primaryStage.setTitle("Ricochet Robots FX");
+        primaryStage.setResizable(false);
+        primaryStage.getIcons().add(new Image(Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream("icon.png"))));
         primaryStage.show();
     }
 }
