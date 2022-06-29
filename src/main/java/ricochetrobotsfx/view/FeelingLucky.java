@@ -11,7 +11,7 @@ public class FeelingLucky {
     private final Scene scene = new Scene(pane, 640, 480);
 
     public FeelingLucky() {
-        
+
     }
 
     public void updateBoard() {
