@@ -37,7 +37,7 @@ public class MainMenu {
         vbox.setAlignment(Pos.CENTER);
         pane.setCenter(vbox);
 
-        scene.getStylesheets().add(Objects.requireNonNull(this.getClass().getResource("/mainMenuStyle.css")).toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/mainMenuStyle.css")).toExternalForm());
     }
 
     public Scene getScene() {
