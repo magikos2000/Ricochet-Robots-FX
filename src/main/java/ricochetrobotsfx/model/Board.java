@@ -3,8 +3,8 @@ package ricochetrobotsfx.model;
 import java.util.Random;
 
 public class Board {
-    private byte[][] board = new byte[16][16];
-    private byte[][] spec = new byte[16][16]; // prism + goals
+    private final byte[][] board = new byte[16][16];
+    private final byte[][] spec = new byte[16][16]; // prism + goals
 
     /*
     0 - blank;
@@ -64,8 +64,8 @@ public class Board {
     };
 
     /*
-    25 - all colour goal;
-    1~16 - goals: (blue, yellow, green, red) * (space, gear, ball, cross)
+    25 - universal goal;
+    1~16 - goals: (blue, yellow, green, red) * (star, gear, ball, cross)
         blue: 1~4
         yellow: 5~8
         green: 9~12
@@ -75,7 +75,6 @@ public class Board {
         yellow: 19~20
         green: 21~22
         red: 23~24
-
      */
     private final static byte[][][] specTemplates = { // 16 temp * 8 col * 8 row
             // 1A
@@ -146,36 +145,20 @@ public class Board {
             }
     }
 
+    private final byte[] matchTable = {0,2,3,4,1,6,7,8,5,10,9,0,0,0,0,0,0,18,17,20,19,22,21,24,23};
+
     private void rotateWall(byte[][] board) {
         for (int i = 0; i < 8; i++)
-            for (int j = 0; j < 8; j++) {
-                if (1 <= board[i][j] && board[i][j] <= 4) {
-                    board[i][j] ++;
-                    if (board[i][j] > 4) board[i][j] = 1;
-                }
-                else if (5 <= board[i][j] && board[i][j] <= 8) {
-                    board[i][j] ++;
-                    if (board[i][j] > 8) board[i][j] = 5;
-                }
-                else if (9 <= board[i][j] && board[i][j] <= 10) {
-                    board[i][j] ++;
-                    if (board[i][j] > 10) board[i][j] = 9;
-                }
-            }
+            for (int j = 0; j < 8; j++)
+                if (1 <= board[i][j] && board[i][j] <= 10)
+                    board[i][j] = matchTable[board[i][j]];
     }
 
     private void rotatePrism(byte[][] spec) {
         for (int i = 0; i < 8; i++)
-            for (int j = 0; j < 8; j++) {
-                if (spec[i][j] == 17) spec[i][j] = 18;
-                if (spec[i][j] == 18) spec[i][j] = 17;
-                if (spec[i][j] == 19) spec[i][j] = 20;
-                if (spec[i][j] == 20) spec[i][j] = 19;
-                if (spec[i][j] == 21) spec[i][j] = 22;
-                if (spec[i][j] == 22) spec[i][j] = 21;
-                if (spec[i][j] == 23) spec[i][j] = 24;
-                if (spec[i][j] == 24) spec[i][j] = 23;
-            }
+            for (int j = 0; j < 8; j++)
+                if (17 <= spec[i][j] && spec[i][j] <= 24)
+                    spec[i][j] = matchTable[spec[i][j]];
     }
 
     private void rotateBoard(byte[][] board, int times) {
