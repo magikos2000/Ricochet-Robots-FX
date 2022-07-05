@@ -62,6 +62,16 @@ public class FeelingLucky {
         matchSpecImage.put((byte)14, getImageResource("/gear/gearRed.png"));
         matchSpecImage.put((byte)15, getImageResource("/ball/ballRed.png"));
         matchSpecImage.put((byte)16, getImageResource("/cross/crossRed.png"));
+        matchSpecImage.put((byte)25, getImageResource("/universal/universal.png"));
+
+        matchSpecImage.put((byte)17, getImageResource("/prism/prismLBlue.png"));
+        matchSpecImage.put((byte)18, getImageResource("/prism/prismRBlue.png"));
+        matchSpecImage.put((byte)19, getImageResource("/prism/prismLYellow.png"));
+        matchSpecImage.put((byte)20, getImageResource("/prism/prismRYellow.png"));
+        matchSpecImage.put((byte)21, getImageResource("/prism/prismLGreen.png"));
+        matchSpecImage.put((byte)22, getImageResource("/prism/prismRGreen.png"));
+        matchSpecImage.put((byte)23, getImageResource("/prism/prismLRed.png"));
+        matchSpecImage.put((byte)24, getImageResource("/prism/prismRRed.png"));
     }
 
     public FeelingLucky() {
@@ -72,15 +82,15 @@ public class FeelingLucky {
         byte[][] spec = temp.getSpec();
         buildMatchTable();
 
-        /*
+
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 16; j++) {
-                System.out.print(board[i][j]);
+                System.out.print(spec[i][j]);
                 System.out.print(" ");
             }
             System.out.println();
         }
-         */
+
 
         for (int i = 0; i < 16; i++)
             for (int j = 0; j < 16; j++) {
