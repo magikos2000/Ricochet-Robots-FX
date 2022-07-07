@@ -189,51 +189,54 @@ public class Board {
         if (random.nextInt(2) > 0) {temp = parts[2]; parts[2] = parts[3]; parts[3] = temp;}
         if (random.nextInt(2) > 0) {temp = parts[3]; parts[3] = parts[0]; parts[0] = temp;}
 
-        System.out.println(parts[0]);
-        System.out.println(parts[1]);
-        System.out.println(parts[2]);
-        System.out.println(parts[3]);
-        System.out.println();
-
         // generate board
-        byte[][] tempBoard;
-        tempBoard = boardTemplates[parts[0]].clone();
+        byte[][] tempBoard = new byte[8][8];
+
+        for (int i = 0; i < 8; i++)
+            System.arraycopy(boardTemplates[parts[0]][i], 0, tempBoard[i], 0, 8);
         rotateBoard(tempBoard, 0);
         for (int i = 0; i < 8; i++)
             System.arraycopy(tempBoard[i], 0, board[i], 0, 8);
 
-        tempBoard = boardTemplates[parts[1]].clone();
+        for (int i = 0; i < 8; i++)
+            System.arraycopy(boardTemplates[parts[1]][i], 0, tempBoard[i], 0, 8);
         rotateBoard(tempBoard, 1);
         for (int i = 0; i < 8; i++)
             System.arraycopy(tempBoard[i], 0, board[i], 8, 8);
 
-        tempBoard = boardTemplates[parts[2]].clone();
+        for (int i = 0; i < 8; i++)
+            System.arraycopy(boardTemplates[parts[2]][i], 0, tempBoard[i], 0, 8);
         rotateBoard(tempBoard, 2);
         for (int i = 0; i < 8; i++)
             System.arraycopy(tempBoard[i], 0, board[i + 8], 8, 8);
 
-        tempBoard = boardTemplates[parts[3]].clone();
+        for (int i = 0; i < 8; i++)
+            System.arraycopy(boardTemplates[parts[3]][i], 0, tempBoard[i], 0, 8);
         rotateBoard(tempBoard, 3);
         for (int i = 0; i < 8; i++)
             System.arraycopy(tempBoard[i], 0, board[i + 8], 0, 8);
 
         // generate spec
-        tempBoard = specTemplates[parts[0]].clone();
+        for (int i = 0; i < 8; i++)
+            System.arraycopy(specTemplates[parts[0]][i], 0, tempBoard[i], 0, 8);
         rotateSpec(tempBoard, 0);
         for (int i = 0; i < 8; i++)
             System.arraycopy(tempBoard[i], 0, spec[i], 0, 8);
 
-        tempBoard = specTemplates[parts[1]].clone();
+        for (int i = 0; i < 8; i++)
+            System.arraycopy(specTemplates[parts[1]][i], 0, tempBoard[i], 0, 8);
         rotateSpec(tempBoard, 1);
         for (int i = 0; i < 8; i++)
             System.arraycopy(tempBoard[i], 0, spec[i], 8, 8);
 
-        tempBoard = specTemplates[parts[2]].clone();
+        for (int i = 0; i < 8; i++)
+            System.arraycopy(specTemplates[parts[2]][i], 0, tempBoard[i], 0, 8);
         rotateSpec(tempBoard, 2);
         for (int i = 0; i < 8; i++)
             System.arraycopy(tempBoard[i], 0, spec[i + 8], 8, 8);
 
-        tempBoard = specTemplates[parts[3]].clone();
+        for (int i = 0; i < 8; i++)
+            System.arraycopy(specTemplates[parts[3]][i], 0, tempBoard[i], 0, 8);
         rotateSpec(tempBoard, 3);
         for (int i = 0; i < 8; i++)
             System.arraycopy(tempBoard[i], 0, spec[i + 8], 0, 8);

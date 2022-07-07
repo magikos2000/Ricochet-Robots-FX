@@ -1,18 +1,21 @@
 package ricochetrobotsfx.view;
 
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import ricochetrobotsfx.model.Board;
-import ricochetrobotsfx.model.Model;
 
 import java.util.HashMap;
 import java.util.Objects;
 
 public class FeelingLucky {
-    Model model;
+    Board currentBoard;
+    ImageView[][] boardTile = new ImageView[16][16];
+    ImageView[][] specTile = new ImageView[16][16];
 
     private final BorderPane pane = new BorderPane();
     private final Pane boardPane = new Pane();
@@ -75,42 +78,50 @@ public class FeelingLucky {
     }
 
     public FeelingLucky() {
-        pane.setCenter(boardPane);
-
-        Board temp = new Board();
-        byte[][] board = temp.getBoard();
-        byte[][] spec = temp.getSpec();
         buildMatchTable();
 
+        for (int i = 0; i < 16; i++)
+            for (int j = 0; j < 16; j++) {
+                boardTile[i][j] = new ImageView();
+                boardTile[i][j].relocate(boardOffsetX + j * tileSize, boardOffsetY + i * tileSize);
+                boardPane.getChildren().add(boardTile[i][j]);
+
+                specTile[i][j] = new ImageView();
+                specTile[i][j].relocate(boardOffsetX + j * tileSize, boardOffsetY + i * tileSize);
+                boardPane.getChildren().add(specTile[i][j]);
+            }
+        pane.setCenter(boardPane);
+
+        Button btnNewGame = new Button("New Game");
+        btnNewGame.setOnAction(event -> newGame());
+        VBox rightBar = new VBox(btnNewGame);
+        pane.setRight(rightBar);
+
+        newGame();
+    }
+
+    public void newGame() {
+        currentBoard = new Board();
+        updateBoard();
+    }
+
+    public void updateBoard() {
+        byte[][] board = currentBoard.getBoard();
+        byte[][] spec = currentBoard.getSpec();
 
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 16; j++) {
-                System.out.print(spec[i][j]);
+                System.out.print(board[i][j]);
                 System.out.print(" ");
             }
             System.out.println();
         }
 
-
         for (int i = 0; i < 16; i++)
             for (int j = 0; j < 16; j++) {
-                ImageView imageView = new ImageView();
-                imageView.setImage(matchBoardImage.get(board[i][j]));
-                imageView.relocate(boardOffsetX + j * (tileSize), boardOffsetY + i * (tileSize));
-                boardPane.getChildren().add(imageView);
+                boardTile[i][j].setImage(matchBoardImage.get(board[i][j]));
+                specTile[i][j].setImage(matchSpecImage.get(spec[i][j]));
             }
-
-        for (int i = 0; i < 16; i++)
-            for (int j = 0; j < 16; j++) {
-                ImageView imageView = new ImageView();
-                imageView.setImage(matchSpecImage.get(spec[i][j]));
-                imageView.relocate(boardOffsetX + j * (tileSize), boardOffsetY + i * (tileSize));
-                boardPane.getChildren().add(imageView);
-            }
-    }
-
-    public void updateBoard() {
-
     }
 
     public Scene getScene() {
