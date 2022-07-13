@@ -179,11 +179,12 @@ public class Board {
     public void newRandomBoard() {
         Random random = new Random();
         boolean flag;
-        for (int i = 0; i < 4; i++) {
-            flag = true;
+        for (int i = 0; i < 4; i++)
             do {
+                flag = true;
                 robotPos[i][0] = random.nextInt(16);
                 robotPos[i][1] = random.nextInt(16);
+
                 for (int j = 0; j < i; j++)
                     if (robotPos[i][0] == robotPos[j][0] && robotPos[i][1] == robotPos[j][1]) {
                         flag = false;
@@ -192,7 +193,6 @@ public class Board {
                 if ((robotPos[i][0] == 7 || robotPos[i][0] == 8) && (robotPos[i][1] == 7 || robotPos[i][1] == 8))
                     flag = false;
             } while (!flag);
-        }
 
         int[] parts = new int[]{
                 random.nextInt(4),
@@ -258,13 +258,7 @@ public class Board {
         for (int i = 0; i < 8; i++)
             System.arraycopy(tempBoard[i], 0, spec[i + 8], 0, 8);
 
-        /*
-        if (!fixBoardSeam(board)) {
-            System.out.println("hey!");
-            //newRandomBoard();
-        }
-
-         */
+        if (!fixBoardSeam(board)) newRandomBoard();
     }
 
     private boolean fixBoardSeam(byte[][] board) {
