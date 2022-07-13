@@ -5,6 +5,7 @@ import java.util.Random;
 public class Board {
     private final byte[][] board = new byte[16][16];
     private final byte[][] spec = new byte[16][16]; // prism + goals
+    private final int[][] robotPos = new int[4][2]; // blue, yellow, green, red
 
     /*
     0 - blank;
@@ -175,15 +176,31 @@ public class Board {
         }
     }
 
-    public Board() {
+    public void newRandomBoard() {
         Random random = new Random();
-        int[] parts = new int[4];
-        int temp;
+        boolean flag;
+        for (int i = 0; i < 4; i++) {
+            flag = true;
+            do {
+                robotPos[i][0] = random.nextInt(16);
+                robotPos[i][1] = random.nextInt(16);
+                for (int j = 0; j < i; j++)
+                    if (robotPos[i][0] == robotPos[j][0] && robotPos[i][1] == robotPos[j][1]) {
+                        flag = false;
+                        break;
+                    }
+                if ((robotPos[i][0] == 7 || robotPos[i][0] == 8) && (robotPos[i][1] == 7 || robotPos[i][1] == 8))
+                    flag = false;
+            } while (!flag);
+        }
 
-        parts[0] = random.nextInt(4);
-        parts[1] = random.nextInt(4) + 4;
-        parts[2] = random.nextInt(4) + 8;
-        parts[3] = random.nextInt(4) + 12;
+        int[] parts = new int[]{
+                random.nextInt(4),
+                random.nextInt(4) + 4,
+                random.nextInt(4) + 8,
+                random.nextInt(4) + 12
+        };
+        int temp;
         if (random.nextInt(2) > 0) {temp = parts[0]; parts[0] = parts[1]; parts[1] = temp;}
         if (random.nextInt(2) > 0) {temp = parts[1]; parts[1] = parts[2]; parts[2] = temp;}
         if (random.nextInt(2) > 0) {temp = parts[2]; parts[2] = parts[3]; parts[3] = temp;}
@@ -240,6 +257,53 @@ public class Board {
         rotateSpec(tempBoard, 3);
         for (int i = 0; i < 8; i++)
             System.arraycopy(tempBoard[i], 0, spec[i + 8], 0, 8);
+
+        /*
+        if (!fixBoardSeam(board)) {
+            System.out.println("hey!");
+            //newRandomBoard();
+        }
+
+         */
+    }
+
+    private boolean fixBoardSeam(byte[][] board) {
+        for (int i = 0; i < 16; i++) {
+            if (board[i][7] == 3 || board[i][7] == 6 || board[i][7] == 7 || board[i][7] == 9) {
+                if (board[i][8] == 0) { board[i][8] = 1; continue; }
+                if (board[i][8] == 1) continue;
+                if (board[i][8] == 2) { board[i][8] = 5; continue; }
+                if (board[i][8] == 3) { board[i][8] = 9; continue; }
+                if (board[i][8] == 4) { board[i][8] = 8; continue; }
+                return false;
+            }
+            else if (board[i][8] == 1 || board[i][8] == 5 || board[i][8] == 8 || board[i][8] == 9) {
+                if (board[i][7] == 0) { board[i][7] = 3; continue; }
+                if (board[i][7] == 1) { board[i][7] = 9; continue; }
+                if (board[i][7] == 2) { board[i][7] = 6; continue; }
+                if (board[i][7] == 3) continue;
+                if (board[i][7] == 4) { board[i][7] = 7; continue; }
+                return false;
+            }
+
+            if (board[7][i] == 4 || board[7][i] == 7 || board[7][i] == 8 || board[7][i] == 10) {
+                if (board[8][i] == 0) { board[8][i] = 2; continue; }
+                if (board[8][i] == 1) { board[8][i] = 5; continue; }
+                if (board[8][i] == 2) continue;
+                if (board[8][i] == 3) { board[8][i] = 6; continue; }
+                if (board[8][i] == 4) { board[8][i] = 10; continue; }
+                return false;
+            }
+            else if (board[8][i] == 2 || board[8][i] == 5 || board[8][i] == 6 || board[8][i] == 10) {
+                if (board[7][i] == 0) { board[7][i] = 4; continue; }
+                if (board[7][i] == 1) { board[7][i] = 8; continue; }
+                if (board[7][i] == 2) { board[7][i] = 10; continue; }
+                if (board[7][i] == 3) { board[7][i] = 7; continue; }
+                if (board[7][i] == 4) continue;
+                return false;
+            }
+        }
+        return true;
     }
 
     public byte[][] getBoard() {
@@ -248,5 +312,9 @@ public class Board {
 
     public byte[][] getSpec() {
         return spec;
+    }
+
+    public int[][] getRobotPos() {
+        return robotPos;
     }
 }

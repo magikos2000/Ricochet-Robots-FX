@@ -4,6 +4,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -16,10 +18,11 @@ public class FeelingLucky {
     Board currentBoard;
     ImageView[][] boardTile = new ImageView[16][16];
     ImageView[][] specTile = new ImageView[16][16];
+    ImageView[] robotTile = new ImageView[4];
 
     private final BorderPane pane = new BorderPane();
     private final Pane boardPane = new Pane();
-    private final Scene scene = new Scene(pane, 1280, 960);
+    private final Scene scene = new Scene(pane, 1200, 840);
 
     private final int boardOffsetX = 20;
     private final int boardOffsetY = 30;
@@ -45,9 +48,8 @@ public class FeelingLucky {
         matchBoardImage.put((byte)6, getImageResource("/wall/wallUpRight.png"));
         matchBoardImage.put((byte)7, getImageResource("/wall/wallRightDown.png"));
         matchBoardImage.put((byte)8, getImageResource("/wall/wallDownLeft.png"));
-        // TODO
-        matchBoardImage.put((byte)9, getImageResource("/wall/blank.png"));
-        matchBoardImage.put((byte)10, getImageResource("/wall/blank.png"));
+        matchBoardImage.put((byte)9, getImageResource("/wall/wallLeftRight.png"));
+        matchBoardImage.put((byte)10, getImageResource("/wall/wallUpDown.png"));
 
         matchSpecImage.put((byte)1, getImageResource("/star/starBlue.png"));
         matchSpecImage.put((byte)2, getImageResource("/gear/gearBlue.png"));
@@ -77,46 +79,86 @@ public class FeelingLucky {
         matchSpecImage.put((byte)24, getImageResource("/prism/prismRRed.png"));
     }
 
+    private void setPos(ImageView obj, int x, int y) {
+        obj.relocate(boardOffsetY + y * tileSize, boardOffsetX + x * tileSize);
+    }
+
     public FeelingLucky() {
         buildMatchTable();
-
         for (int i = 0; i < 16; i++)
             for (int j = 0; j < 16; j++) {
                 boardTile[i][j] = new ImageView();
-                boardTile[i][j].relocate(boardOffsetX + j * tileSize, boardOffsetY + i * tileSize);
+                setPos(boardTile[i][j], i, j);
                 boardPane.getChildren().add(boardTile[i][j]);
 
                 specTile[i][j] = new ImageView();
-                specTile[i][j].relocate(boardOffsetX + j * tileSize, boardOffsetY + i * tileSize);
+                setPos(specTile[i][j], i, j);
                 boardPane.getChildren().add(specTile[i][j]);
             }
+
+        robotTile[0] = new ImageView();
+        robotTile[0].setImage(getImageResource("/robot/robotBlue.png"));
+        robotTile[1] = new ImageView();
+        robotTile[1].setImage(getImageResource("/robot/robotYellow.png"));
+        robotTile[2] = new ImageView();
+        robotTile[2].setImage(getImageResource("/robot/robotGreen.png"));
+        robotTile[3] = new ImageView();
+        robotTile[3].setImage(getImageResource("/robot/robotRed.png"));
+        boardPane.getChildren().addAll(robotTile[0], robotTile[1], robotTile[2], robotTile[3]);
+
         pane.setCenter(boardPane);
 
         Button btnNewGame = new Button("New Game");
         btnNewGame.setOnAction(event -> newGame());
         VBox rightBar = new VBox(btnNewGame);
+
         pane.setRight(rightBar);
 
+        setupInputHandler();
+        currentBoard = new Board();
         newGame();
     }
 
+    private void setupInputHandler() {
+        robotTile[0].setOnMouseClicked(event -> {System.out.println("hey!");});
+
+        scene.addEventHandler(KeyEvent.KEY_PRESSED, FeelingLucky::handleKeyboardInput);
+    }
+
+    static void handleKeyboardInput(KeyEvent keyEvent) {
+        KeyCode pressed = keyEvent.getCode();
+
+        if (pressed.equals(KeyCode.UP) || pressed.equals(KeyCode.W)) {
+
+        }
+
+        if (pressed.equals(KeyCode.DOWN) || pressed.equals(KeyCode.S)) {
+
+        }
+
+        if (pressed.equals(KeyCode.LEFT) || pressed.equals(KeyCode.A)) {
+
+        }
+
+        if (pressed.equals(KeyCode.RIGHT) || pressed.equals(KeyCode.D)) {
+
+        }
+    }
+
     public void newGame() {
-        currentBoard = new Board();
+        currentBoard.newRandomBoard();
         updateBoard();
     }
 
     public void updateBoard() {
+        int[][] robotPos = currentBoard.getRobotPos();
+        setPos(robotTile[0], robotPos[0][0], robotPos[0][1]);
+        setPos(robotTile[1], robotPos[1][0], robotPos[1][1]);
+        setPos(robotTile[2], robotPos[2][0], robotPos[2][1]);
+        setPos(robotTile[3], robotPos[3][0], robotPos[3][1]);
+
         byte[][] board = currentBoard.getBoard();
         byte[][] spec = currentBoard.getSpec();
-
-        for (int i = 0; i < 16; i++) {
-            for (int j = 0; j < 16; j++) {
-                System.out.print(board[i][j]);
-                System.out.print(" ");
-            }
-            System.out.println();
-        }
-
         for (int i = 0; i < 16; i++)
             for (int j = 0; j < 16; j++) {
                 boardTile[i][j].setImage(matchBoardImage.get(board[i][j]));
