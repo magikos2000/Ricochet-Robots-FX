@@ -1,11 +1,18 @@
 package ricochetrobotsfx.model;
 
+import ricochetrobotsfx.view.Solver;
+
 import java.util.Random;
 
 public class Board {
     private final byte[][] board = new byte[16][16];
     private final byte[][] spec = new byte[16][16]; // prism + goals
     private final int[][] robotPos = new int[4][2]; // blue, yellow, green, red
+    // 1~16 - goals: (blue, yellow, green, red) * (star, gear, ball, cross), 25 - universal goal
+    private byte goalNo = 0;
+    private final byte[] goalsRemained = new byte[17];
+
+    Solver solver = new Solver(this);
 
     /*
     0 - blank;
@@ -259,6 +266,30 @@ public class Board {
             System.arraycopy(tempBoard[i], 0, spec[i + 8], 0, 8);
 
         if (!fixBoardSeam(board)) newRandomBoard();
+
+        goalNo = -1;
+        for (int i = 0; i < 16; i++)
+            goalsRemained[i] = (byte)(i+1);
+        goalsRemained[16] = (byte)25;
+
+        for (int i = 0; i < 19; i++) {
+            int t1 = random.nextInt(17);
+            int t2 = random.nextInt(17);
+            byte tmp = goalsRemained[t1];
+            goalsRemained[t1] = goalsRemained[t2];
+            goalsRemained[t2] = tmp;
+        }
+    }
+
+    public byte getNextGoal() {
+        goalNo++;
+        if (goalNo > 16) return (byte) -1;
+        return goalsRemained[goalNo];
+    }
+
+    public byte getGoal() {
+        if (goalNo > 16) return (byte) -1;
+        return goalsRemained[goalNo];
     }
 
     private boolean fixBoardSeam(byte[][] board) {

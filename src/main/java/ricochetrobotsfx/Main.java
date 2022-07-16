@@ -3,7 +3,9 @@ package ricochetrobotsfx;
 import javafx.application.Application;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import ricochetrobotsfx.controller.Controller;
 import ricochetrobotsfx.controller.SceneController;
+import ricochetrobotsfx.model.Board;
 import ricochetrobotsfx.view.FeelingLucky;
 import ricochetrobotsfx.view.LANPlay;
 import ricochetrobotsfx.view.MainMenu;
@@ -19,22 +21,24 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        Board board = new Board();
+        Controller controller = new Controller(board);
         SceneController sceneController = new SceneController(primaryStage);
+
         MainMenu menu = new MainMenu(sceneController);
-        FeelingLucky feelingLucky = new FeelingLucky();
+        FeelingLucky feelingLucky = new FeelingLucky(board, controller);
         LANPlay lanPlay = new LANPlay();
-        Solver solver = new Solver();
 
         sceneController.addScene("Main Menu", menu.getScene());
         sceneController.addScene("Feeling Lucky", feelingLucky.getScene());
         sceneController.addScene("LAN Play", lanPlay.getScene());
-        sceneController.addScene("Solver", solver.getScene());
-
-
         sceneController.switchTo("Main Menu");
+
         primaryStage.setTitle("Ricochet Robots FX");
         primaryStage.setResizable(false);
-        primaryStage.getIcons().add(new Image(Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream("icon.png"))));
+        primaryStage.getIcons().add(new Image(
+                Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream("icon.png"))
+        ));
         primaryStage.show();
     }
 }

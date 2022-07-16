@@ -2,20 +2,26 @@ package ricochetrobotsfx.view;
 
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import ricochetrobotsfx.controller.Controller;
 import ricochetrobotsfx.model.Board;
+import ricochetrobotsfx.view.alerts.Popup;
 
 import java.util.HashMap;
 import java.util.Objects;
 
 public class FeelingLucky {
-    Board currentBoard;
+    Board board;
+    Controller controller;
+
     ImageView[][] boardTile = new ImageView[16][16];
     ImageView[][] specTile = new ImageView[16][16];
     ImageView[] robotTile = new ImageView[4];
@@ -24,17 +30,19 @@ public class FeelingLucky {
     private final Pane boardPane = new Pane();
     private final Scene scene = new Scene(pane, 1200, 840);
 
-    private final int boardOffsetX = 20;
-    private final int boardOffsetY = 30;
-    private final int tileSize = 50;
+    private final int boardOffsetX = 10;
+    private final int boardOffsetY = 15;
+    private final int tileSize = 40;
 
     private final HashMap<Byte, Image> matchBoardImage = new HashMap<>();
     private final HashMap<Byte, Image> matchSpecImage = new HashMap<>();
 
+    ImageView imgNextGoal = new ImageView();
+
     private Image getImageResource(String imageURL) {
         return new Image(
                 Objects.requireNonNull(getClass().getResource(imageURL)).toExternalForm(),
-                tileSize, tileSize, true, false
+                tileSize, tileSize, true, true
         );
     }
 
@@ -83,7 +91,11 @@ public class FeelingLucky {
         obj.relocate(boardOffsetY + y * tileSize, boardOffsetX + x * tileSize);
     }
 
-    public FeelingLucky() {
+    public FeelingLucky(Board board, Controller controller) {
+        this.board = board;
+        this.controller = controller;
+        controller.setFeelingLucky(this);
+
         buildMatchTable();
         for (int i = 0; i < 16; i++)
             for (int j = 0; j < 16; j++) {
@@ -109,14 +121,15 @@ public class FeelingLucky {
         pane.setCenter(boardPane);
 
         Button btnNewGame = new Button("New Game");
-        btnNewGame.setOnAction(event -> newGame());
-        VBox rightBar = new VBox(btnNewGame);
+        btnNewGame.setOnAction(event -> controller.newGame());
+        Label lblNextGoal = new Label("Next Goal:");
+        HBox hBoxNextGoal = new HBox(lblNextGoal, imgNextGoal);
+        VBox rightBar = new VBox(btnNewGame, hBoxNextGoal);
 
         pane.setRight(rightBar);
 
         setupInputHandler();
-        currentBoard = new Board();
-        newGame();
+        controller.newGame();
     }
 
     private void setupInputHandler() {
@@ -145,25 +158,28 @@ public class FeelingLucky {
         }
     }
 
-    public void newGame() {
-        currentBoard.newRandomBoard();
-        updateBoard();
-    }
-
     public void updateBoard() {
-        int[][] robotPos = currentBoard.getRobotPos();
+        int[][] robotPos = board.getRobotPos();
         setPos(robotTile[0], robotPos[0][0], robotPos[0][1]);
         setPos(robotTile[1], robotPos[1][0], robotPos[1][1]);
         setPos(robotTile[2], robotPos[2][0], robotPos[2][1]);
         setPos(robotTile[3], robotPos[3][0], robotPos[3][1]);
 
-        byte[][] board = currentBoard.getBoard();
-        byte[][] spec = currentBoard.getSpec();
+        byte[][] board = this.board.getBoard();
+        byte[][] spec = this.board.getSpec();
         for (int i = 0; i < 16; i++)
             for (int j = 0; j < 16; j++) {
                 boardTile[i][j].setImage(matchBoardImage.get(board[i][j]));
                 specTile[i][j].setImage(matchSpecImage.get(spec[i][j]));
             }
+    }
+
+    public void updateGoal() {
+        byte nextGoal = board.getNextGoal();
+        if (nextGoal < 0)
+            new Popup("Warning", "No more valid goals remaining.").show();
+        else
+            imgNextGoal.setImage(matchSpecImage.get(nextGoal));
     }
 
     public Scene getScene() {

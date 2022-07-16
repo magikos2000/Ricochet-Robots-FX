@@ -1,13 +1,20 @@
 package ricochetrobotsfx.view;
 
-import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
+import ricochetrobotsfx.Pair;
+import ricochetrobotsfx.model.Board;
+
+import java.util.List;
 
 public class Solver {
-    private final BorderPane pane = new BorderPane();
-    private final Scene scene = new Scene(pane, 640, 480);
+    Board board;
 
-    public Scene getScene() {
-        return scene;
+    public Solver(Board board) {
+        this.board = board;
+    }
+
+    public List<Pair<Byte, Byte>> findSolution() {
+
+
+        return null;
     }
 }
