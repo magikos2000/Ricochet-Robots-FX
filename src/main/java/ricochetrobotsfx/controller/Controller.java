@@ -20,4 +20,9 @@ public class Controller {
         feelingLucky.updateBoard();
         feelingLucky.updateGoal();
     }
+
+    public void findSolution() {
+        board.findSolution();
+        feelingLucky.updateSolution();
+    }
 }

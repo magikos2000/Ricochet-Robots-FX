@@ -3,6 +3,7 @@ package ricochetrobotsfx.view;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -11,11 +12,13 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import ricochetrobotsfx.Pair;
 import ricochetrobotsfx.controller.Controller;
 import ricochetrobotsfx.model.Board;
 import ricochetrobotsfx.view.alerts.Popup;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 public class FeelingLucky {
@@ -28,7 +31,7 @@ public class FeelingLucky {
 
     private final BorderPane pane = new BorderPane();
     private final Pane boardPane = new Pane();
-    private final Scene scene = new Scene(pane, 1200, 840);
+    private final Scene scene = new Scene(pane, 950, 666);
 
     private final int boardOffsetX = 10;
     private final int boardOffsetY = 15;
@@ -38,6 +41,7 @@ public class FeelingLucky {
     private final HashMap<Byte, Image> matchSpecImage = new HashMap<>();
 
     ImageView imgNextGoal = new ImageView();
+    TextArea txtSolution = new TextArea();
 
     private Image getImageResource(String imageURL) {
         return new Image(
@@ -124,12 +128,48 @@ public class FeelingLucky {
         btnNewGame.setOnAction(event -> controller.newGame());
         Label lblNextGoal = new Label("Next Goal:");
         HBox hBoxNextGoal = new HBox(lblNextGoal, imgNextGoal);
-        VBox rightBar = new VBox(btnNewGame, hBoxNextGoal);
+        Button btnFindSolution = new Button("Find solution");
+        btnFindSolution.setOnAction(event -> controller.findSolution());
+        Label lblSolution = new Label("Solution:");
+        txtSolution.setPrefWidth(200);
+        HBox hBoxSolution = new HBox(lblSolution, txtSolution);
 
+        VBox rightBar = new VBox(btnNewGame, hBoxNextGoal, btnFindSolution, hBoxSolution);
+        rightBar.setSpacing(30);
         pane.setRight(rightBar);
 
         setupInputHandler();
         controller.newGame();
+    }
+
+    public void updateSolution() {
+        List<Pair<Byte, Integer>> solution = board.getSolution();
+        StringBuilder sol = new StringBuilder();
+
+        sol.append("Number of steps: ").append(solution.size()).append("\n");
+        sol.append("----------\n");
+        for (Pair<Byte, Integer> step: solution) {
+            // blue, yellow, green, red
+            if (step.key() == (byte)0)
+                sol.append("Blue: ");
+            else if (step.key() == (byte)1)
+                sol.append("Yellow: ");
+            else if (step.key() == (byte)2)
+                sol.append("Green: ");
+            else if (step.key() == (byte)3)
+                sol.append("Red: ");
+
+            if (step.value() == 0)
+                sol.append("left\n");
+            else if (step.value() == 1)
+                sol.append("up\n");
+            else if (step.value() == 2)
+                sol.append("right\n");
+            else if (step.value() == 3)
+                sol.append("down\n");
+        }
+
+        txtSolution.setText(sol.toString());
     }
 
     private void setupInputHandler() {

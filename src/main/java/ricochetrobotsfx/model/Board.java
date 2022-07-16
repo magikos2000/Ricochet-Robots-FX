@@ -1,11 +1,13 @@
 package ricochetrobotsfx.model;
 
+import ricochetrobotsfx.Pair;
 import ricochetrobotsfx.view.Solver;
 
+import java.util.List;
 import java.util.Random;
 
 public class Board {
-    private final byte[][] board = new byte[16][16];
+    private final byte[][] board = new byte[16][16]; // walls
     private final byte[][] spec = new byte[16][16]; // prism + goals
     private final int[][] robotPos = new int[4][2]; // blue, yellow, green, red
     // 1~16 - goals: (blue, yellow, green, red) * (star, gear, ball, cross), 25 - universal goal
@@ -341,5 +343,15 @@ public class Board {
 
     public int[][] getRobotPos() {
         return robotPos;
+    }
+
+    List<Pair<Byte, Integer>> solution;
+
+    public void findSolution() {
+        solution = solver.findSolution();
+    }
+
+    public List<Pair<Byte, Integer>> getSolution() {
+        return solution;
     }
 }
