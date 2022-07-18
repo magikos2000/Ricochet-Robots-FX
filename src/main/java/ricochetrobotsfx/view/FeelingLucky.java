@@ -37,8 +37,8 @@ public class FeelingLucky {
     private final int boardOffsetY = 15;
     private final int tileSize = 40;
 
-    private final HashMap<Byte, Image> matchBoardImage = new HashMap<>();
-    private final HashMap<Byte, Image> matchSpecImage = new HashMap<>();
+    private final HashMap<Integer, Image> matchBoardImage = new HashMap<>();
+    private final HashMap<Integer, Image> matchSpecImage = new HashMap<>();
 
     ImageView imgNextGoal = new ImageView();
     TextArea txtSolution = new TextArea();
@@ -51,44 +51,44 @@ public class FeelingLucky {
     }
 
     private void buildMatchTable() {
-        matchBoardImage.put((byte)0, getImageResource("/wall/blank.png"));
-        matchBoardImage.put((byte)1, getImageResource("/wall/wallLeft.png"));
-        matchBoardImage.put((byte)2, getImageResource("/wall/wallUp.png"));
-        matchBoardImage.put((byte)3, getImageResource("/wall/wallRight.png"));
-        matchBoardImage.put((byte)4, getImageResource("/wall/wallDown.png"));
-        matchBoardImage.put((byte)5, getImageResource("/wall/wallLeftUp.png"));
-        matchBoardImage.put((byte)6, getImageResource("/wall/wallUpRight.png"));
-        matchBoardImage.put((byte)7, getImageResource("/wall/wallRightDown.png"));
-        matchBoardImage.put((byte)8, getImageResource("/wall/wallDownLeft.png"));
-        matchBoardImage.put((byte)9, getImageResource("/wall/wallLeftRight.png"));
-        matchBoardImage.put((byte)10, getImageResource("/wall/wallUpDown.png"));
+        matchBoardImage.put(0, getImageResource("/wall/blank.png"));
+        matchBoardImage.put(1, getImageResource("/wall/wallLeft.png"));
+        matchBoardImage.put(2, getImageResource("/wall/wallUp.png"));
+        matchBoardImage.put(3, getImageResource("/wall/wallRight.png"));
+        matchBoardImage.put(4, getImageResource("/wall/wallDown.png"));
+        matchBoardImage.put(5, getImageResource("/wall/wallLeftUp.png"));
+        matchBoardImage.put(6, getImageResource("/wall/wallUpRight.png"));
+        matchBoardImage.put(7, getImageResource("/wall/wallRightDown.png"));
+        matchBoardImage.put(8, getImageResource("/wall/wallDownLeft.png"));
+        matchBoardImage.put(9, getImageResource("/wall/wallLeftRight.png"));
+        matchBoardImage.put(10, getImageResource("/wall/wallUpDown.png"));
 
-        matchSpecImage.put((byte)1, getImageResource("/star/starBlue.png"));
-        matchSpecImage.put((byte)2, getImageResource("/gear/gearBlue.png"));
-        matchSpecImage.put((byte)3, getImageResource("/ball/ballBlue.png"));
-        matchSpecImage.put((byte)4, getImageResource("/cross/crossBlue.png"));
-        matchSpecImage.put((byte)5, getImageResource("/star/starYellow.png"));
-        matchSpecImage.put((byte)6, getImageResource("/gear/gearYellow.png"));
-        matchSpecImage.put((byte)7, getImageResource("/ball/ballYellow.png"));
-        matchSpecImage.put((byte)8, getImageResource("/cross/crossYellow.png"));
-        matchSpecImage.put((byte)9, getImageResource("/star/starGreen.png"));
-        matchSpecImage.put((byte)10, getImageResource("/gear/gearGreen.png"));
-        matchSpecImage.put((byte)11, getImageResource("/ball/ballGreen.png"));
-        matchSpecImage.put((byte)12, getImageResource("/cross/crossGreen.png"));
-        matchSpecImage.put((byte)13, getImageResource("/star/starRed.png"));
-        matchSpecImage.put((byte)14, getImageResource("/gear/gearRed.png"));
-        matchSpecImage.put((byte)15, getImageResource("/ball/ballRed.png"));
-        matchSpecImage.put((byte)16, getImageResource("/cross/crossRed.png"));
-        matchSpecImage.put((byte)25, getImageResource("/universal/universal.png"));
+        matchSpecImage.put(1, getImageResource("/star/starBlue.png"));
+        matchSpecImage.put(2, getImageResource("/gear/gearBlue.png"));
+        matchSpecImage.put(3, getImageResource("/ball/ballBlue.png"));
+        matchSpecImage.put(4, getImageResource("/cross/crossBlue.png"));
+        matchSpecImage.put(5, getImageResource("/star/starYellow.png"));
+        matchSpecImage.put(6, getImageResource("/gear/gearYellow.png"));
+        matchSpecImage.put(7, getImageResource("/ball/ballYellow.png"));
+        matchSpecImage.put(8, getImageResource("/cross/crossYellow.png"));
+        matchSpecImage.put(9, getImageResource("/star/starGreen.png"));
+        matchSpecImage.put(10, getImageResource("/gear/gearGreen.png"));
+        matchSpecImage.put(11, getImageResource("/ball/ballGreen.png"));
+        matchSpecImage.put(12, getImageResource("/cross/crossGreen.png"));
+        matchSpecImage.put(13, getImageResource("/star/starRed.png"));
+        matchSpecImage.put(14, getImageResource("/gear/gearRed.png"));
+        matchSpecImage.put(15, getImageResource("/ball/ballRed.png"));
+        matchSpecImage.put(16, getImageResource("/cross/crossRed.png"));
+        matchSpecImage.put(25, getImageResource("/universal/universal.png"));
 
-        matchSpecImage.put((byte)17, getImageResource("/prism/prismLBlue.png"));
-        matchSpecImage.put((byte)18, getImageResource("/prism/prismRBlue.png"));
-        matchSpecImage.put((byte)19, getImageResource("/prism/prismLYellow.png"));
-        matchSpecImage.put((byte)20, getImageResource("/prism/prismRYellow.png"));
-        matchSpecImage.put((byte)21, getImageResource("/prism/prismLGreen.png"));
-        matchSpecImage.put((byte)22, getImageResource("/prism/prismRGreen.png"));
-        matchSpecImage.put((byte)23, getImageResource("/prism/prismLRed.png"));
-        matchSpecImage.put((byte)24, getImageResource("/prism/prismRRed.png"));
+        matchSpecImage.put(17, getImageResource("/prism/prismLBlue.png"));
+        matchSpecImage.put(18, getImageResource("/prism/prismRBlue.png"));
+        matchSpecImage.put(19, getImageResource("/prism/prismLYellow.png"));
+        matchSpecImage.put(20, getImageResource("/prism/prismRYellow.png"));
+        matchSpecImage.put(21, getImageResource("/prism/prismLGreen.png"));
+        matchSpecImage.put(22, getImageResource("/prism/prismRGreen.png"));
+        matchSpecImage.put(23, getImageResource("/prism/prismLRed.png"));
+        matchSpecImage.put(24, getImageResource("/prism/prismRRed.png"));
     }
 
     private void setPos(ImageView obj, int x, int y) {
@@ -143,20 +143,20 @@ public class FeelingLucky {
     }
 
     public void updateSolution() {
-        List<Pair<Byte, Integer>> solution = board.getSolution();
-        StringBuilder sol = new StringBuilder();
+        List<Pair<Integer, Integer>> solution = board.getSolution();
 
+        StringBuilder sol = new StringBuilder();
         sol.append("Number of steps: ").append(solution.size()).append("\n");
         sol.append("----------\n");
-        for (Pair<Byte, Integer> step: solution) {
+        for (Pair<Integer, Integer> step: solution) {
             // blue, yellow, green, red
-            if (step.key() == (byte)0)
+            if (step.key() == 0)
                 sol.append("Blue: ");
-            else if (step.key() == (byte)1)
+            else if (step.key() == 1)
                 sol.append("Yellow: ");
-            else if (step.key() == (byte)2)
+            else if (step.key() == 2)
                 sol.append("Green: ");
-            else if (step.key() == (byte)3)
+            else if (step.key() == 3)
                 sol.append("Red: ");
 
             if (step.value() == 0)
@@ -205,8 +205,8 @@ public class FeelingLucky {
         setPos(robotTile[2], robotPos[2][0], robotPos[2][1]);
         setPos(robotTile[3], robotPos[3][0], robotPos[3][1]);
 
-        byte[][] board = this.board.getBoard();
-        byte[][] spec = this.board.getSpec();
+        int[][] board = this.board.getBoard();
+        int[][] spec = this.board.getSpec();
         for (int i = 0; i < 16; i++)
             for (int j = 0; j < 16; j++) {
                 boardTile[i][j].setImage(matchBoardImage.get(board[i][j]));
@@ -215,11 +215,13 @@ public class FeelingLucky {
     }
 
     public void updateGoal() {
-        byte nextGoal = board.getNextGoal();
+        int nextGoal = board.getNextGoal();
         if (nextGoal < 0)
             new Popup("Warning", "No more valid goals remaining.").show();
         else
             imgNextGoal.setImage(matchSpecImage.get(nextGoal));
+
+        txtSolution.setText("");
     }
 
     public Scene getScene() {

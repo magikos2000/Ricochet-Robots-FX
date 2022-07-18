@@ -7,12 +7,12 @@ import java.util.List;
 import java.util.Random;
 
 public class Board {
-    private final byte[][] board = new byte[16][16]; // walls
-    private final byte[][] spec = new byte[16][16]; // prism + goals
+    private final int[][] board = new int[16][16]; // walls
+    private final int[][] spec = new int[16][16]; // prism + goals
     private final int[][] robotPos = new int[4][2]; // blue, yellow, green, red
     // 1~16 - goals: (blue, yellow, green, red) * (star, gear, ball, cross), 25 - universal goal
-    private byte goalNo = 0;
-    private final byte[] goalsRemained = new byte[17];
+    private int goalNo = 0;
+    private final int[] goalsRemained = new int[17];
 
     Solver solver = new Solver(this);
 
@@ -22,7 +22,7 @@ public class Board {
     5~8 - two-side wall: left+up, up+right, right+down, down+left;
     9~10 - opposite wall: left+right, up+down;
      */
-    private final static byte[][][] boardTemplates = { // 16 temp * 8 col * 8 row
+    private final static int[][][] boardTemplates = { // 16 temp * 8 col * 8 row
             // 1A
             {{5,6,5,2,2,2,2,2},{1,0,3,5,0,0,0,0},{1,0,0,0,0,0,0,0},{1,0,0,0,0,0,7,1},
                     {9,8,0,0,0,0,2,0},{1,2,0,0,4,0,0,0},{8,0,0,0,6,1,0,4},{5,0,0,0,0,0,3,5}},
@@ -86,7 +86,7 @@ public class Board {
         green: 21~22
         red: 23~24
      */
-    private final static byte[][][] specTemplates = { // 16 temp * 8 col * 8 row
+    private final static int[][][] specTemplates = { // 16 temp * 8 col * 8 row
             // 1A
             {{0,0,0,0,0,0,0,0},{0,0,0,10,0,0,0,0},{0,0,0,0,0,0,0,0},{0,0,0,0,0,0,8,0},
                     {0,15,0,0,0,0,0,0},{0,0,0,0,0,0,0,0},{0,0,0,0,1,0,0,0},{0,0,0,0,0,0,0,0}},
@@ -138,8 +138,8 @@ public class Board {
     };
 
     // rotate clockwise
-    private void rotateArray(byte[][] board) {
-        byte temp;
+    private void rotateArray(int[][] board) {
+        int temp;
         for (int i = 0; i < 7; i++)
             for (int j = 0; j < 7-i; j++) {
                 temp = board[i][j];
@@ -155,30 +155,30 @@ public class Board {
             }
     }
 
-    private final byte[] matchTable = {0,2,3,4,1,6,7,8,5,10,9,0,0,0,0,0,0,18,17,20,19,22,21,24,23};
+    private final int[] matchTable = {0,2,3,4,1,6,7,8,5,10,9,0,0,0,0,0,0,18,17,20,19,22,21,24,23};
 
-    private void rotateWall(byte[][] board) {
+    private void rotateWall(int[][] board) {
         for (int i = 0; i < 8; i++)
             for (int j = 0; j < 8; j++)
                 if (1 <= board[i][j] && board[i][j] <= 10)
                     board[i][j] = matchTable[board[i][j]];
     }
 
-    private void rotatePrism(byte[][] spec) {
+    private void rotatePrism(int[][] spec) {
         for (int i = 0; i < 8; i++)
             for (int j = 0; j < 8; j++)
                 if (17 <= spec[i][j] && spec[i][j] <= 24)
                     spec[i][j] = matchTable[spec[i][j]];
     }
 
-    private void rotateBoard(byte[][] board, int times) {
+    private void rotateBoard(int[][] board, int times) {
         for (int i = 0; i < times; i++) {
             rotateArray(board);
             rotateWall(board);
         }
     }
 
-    private void rotateSpec(byte[][] spec, int times) {
+    private void rotateSpec(int[][] spec, int times) {
         for (int i = 0; i < times; i++) {
             rotateArray(spec);
             rotatePrism(spec);
@@ -216,7 +216,7 @@ public class Board {
         if (random.nextInt(2) > 0) {temp = parts[3]; parts[3] = parts[0]; parts[0] = temp;}
 
         // generate board
-        byte[][] tempBoard = new byte[8][8];
+        int[][] tempBoard = new int[8][8];
 
         for (int i = 0; i < 8; i++)
             System.arraycopy(boardTemplates[parts[0]][i], 0, tempBoard[i], 0, 8);
@@ -271,30 +271,31 @@ public class Board {
 
         goalNo = -1;
         for (int i = 0; i < 16; i++)
-            goalsRemained[i] = (byte)(i+1);
-        goalsRemained[16] = (byte)25;
+            goalsRemained[i] = i+1;
+        goalsRemained[16] = 25;
 
         for (int i = 0; i < 19; i++) {
             int t1 = random.nextInt(17);
             int t2 = random.nextInt(17);
-            byte tmp = goalsRemained[t1];
+            int tmp = goalsRemained[t1];
             goalsRemained[t1] = goalsRemained[t2];
             goalsRemained[t2] = tmp;
         }
     }
 
-    public byte getNextGoal() {
+    public int getNextGoal() {
+        solution = null;
         goalNo++;
-        if (goalNo > 16) return (byte) -1;
+        if (goalNo > 16) return -1;
         return goalsRemained[goalNo];
     }
 
-    public byte getGoal() {
-        if (goalNo > 16) return (byte) -1;
+    public int getGoal() {
+        if (goalNo > 16) return -1;
         return goalsRemained[goalNo];
     }
 
-    private boolean fixBoardSeam(byte[][] board) {
+    private boolean fixBoardSeam(int[][] board) {
         for (int i = 0; i < 16; i++) {
             if (board[i][7] == 3 || board[i][7] == 6 || board[i][7] == 7 || board[i][7] == 9) {
                 if (board[i][8] == 0) { board[i][8] = 1; continue; }
@@ -333,11 +334,11 @@ public class Board {
         return true;
     }
 
-    public byte[][] getBoard() {
+    public int[][] getBoard() {
         return board;
     }
 
-    public byte[][] getSpec() {
+    public int[][] getSpec() {
         return spec;
     }
 
@@ -345,13 +346,13 @@ public class Board {
         return robotPos;
     }
 
-    List<Pair<Byte, Integer>> solution;
+    List<Pair<Integer, Integer>> solution = null;
 
     public void findSolution() {
         solution = solver.findSolution();
     }
 
-    public List<Pair<Byte, Integer>> getSolution() {
+    public List<Pair<Integer, Integer>> getSolution() {
         return solution;
     }
 }
