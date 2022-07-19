@@ -21,15 +21,29 @@ public class Solver {
         int[][] robotPos = game.getRobotPos().clone(); // blue, yellow, green, red
         int goal = game.getGoal();
 
-        ans = new ArrayList<Pair<Integer, Integer>>();
+        ans = new ArrayList<>();
         int steps = 0;
-        while (ans.size() == 0)
-            backIDS(board, spec, robotPos, goal, steps++, new Pair<>(0, new Pair<>(0, 0)));
+        while (true) {
+            int[][] robot = robotPos.clone();
+            if (backDFS(board, spec, robot, goal, steps)) break;
+            steps++;
+        }
         return ans;
     }
 
-    private void backIDS(int[][] board, int[][] spec, int[][] robotPos, int goal, int steps, Pair<Integer, Pair<Integer, Integer>> lastPos) {
+    private boolean backDFS(int[][] board, int[][] spec, int[][] robot, int goal, int steps) {
+        // test if the goal is reached
+
+
+        // move up
+
+        // move down
+
+        // move left
+
+        // move right
 
         ans.add(new Pair<>(1, 2));
+        return false;
     }
 }

@@ -9,7 +9,6 @@ import ricochetrobotsfx.model.Board;
 import ricochetrobotsfx.view.FeelingLucky;
 import ricochetrobotsfx.view.LANPlay;
 import ricochetrobotsfx.view.MainMenu;
-import ricochetrobotsfx.view.Solver;
 
 import java.util.Objects;
 

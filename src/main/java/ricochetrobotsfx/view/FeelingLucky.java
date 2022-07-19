@@ -27,7 +27,7 @@ public class FeelingLucky {
 
     ImageView[][] boardTile = new ImageView[16][16];
     ImageView[][] specTile = new ImageView[16][16];
-    ImageView[] robotTile = new ImageView[4];
+    ImageView[] robotTile = new ImageView[5];
 
     private final BorderPane pane = new BorderPane();
     private final Pane boardPane = new Pane();
@@ -120,7 +120,9 @@ public class FeelingLucky {
         robotTile[2].setImage(getImageResource("/robot/robotGreen.png"));
         robotTile[3] = new ImageView();
         robotTile[3].setImage(getImageResource("/robot/robotRed.png"));
-        boardPane.getChildren().addAll(robotTile[0], robotTile[1], robotTile[2], robotTile[3]);
+        robotTile[4] = new ImageView();
+        robotTile[4].setImage(getImageResource("/robot/robotSilver.png"));
+        boardPane.getChildren().addAll(robotTile[0], robotTile[1], robotTile[2], robotTile[3], robotTile[4]);
 
         pane.setCenter(boardPane);
 
@@ -204,6 +206,7 @@ public class FeelingLucky {
         setPos(robotTile[1], robotPos[1][0], robotPos[1][1]);
         setPos(robotTile[2], robotPos[2][0], robotPos[2][1]);
         setPos(robotTile[3], robotPos[3][0], robotPos[3][1]);
+        setPos(robotTile[4], robotPos[4][0], robotPos[4][1]);
 
         int[][] board = this.board.getBoard();
         int[][] spec = this.board.getSpec();

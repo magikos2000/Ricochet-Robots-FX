@@ -9,7 +9,7 @@ import java.util.Random;
 public class Board {
     private final int[][] board = new int[16][16]; // walls
     private final int[][] spec = new int[16][16]; // prism + goals
-    private final int[][] robotPos = new int[4][2]; // blue, yellow, green, red
+    private final int[][] robotPos = new int[5][2]; // blue, yellow, green, red
     // 1~16 - goals: (blue, yellow, green, red) * (star, gear, ball, cross), 25 - universal goal
     private int goalNo = 0;
     private final int[] goalsRemained = new int[17];
@@ -188,7 +188,7 @@ public class Board {
     public void newRandomBoard() {
         Random random = new Random();
         boolean flag;
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 5; i++)
             do {
                 flag = true;
                 robotPos[i][0] = random.nextInt(16);
