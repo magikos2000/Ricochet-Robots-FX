@@ -281,6 +281,8 @@ public class Board {
             goalsRemained[t1] = goalsRemained[t2];
             goalsRemained[t2] = tmp;
         }
+
+        solver.preprocess();
     }
 
     public int getNextGoal() {
