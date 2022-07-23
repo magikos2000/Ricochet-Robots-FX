@@ -146,6 +146,10 @@ public class FeelingLucky {
 
     public void updateSolution() {
         List<Pair<Integer, Integer>> solution = board.getSolution();
+        if (solution == null) {
+            txtSolution.setText("Solution does not exist.");
+            return;
+        }
 
         StringBuilder sol = new StringBuilder();
         sol.append("Number of steps: ").append(solution.size()).append("\n");

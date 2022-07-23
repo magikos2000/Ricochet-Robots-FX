@@ -12,6 +12,7 @@ public class Solver {
 
     public Solver(Board game) {
         this.game = game;
+
     }
 
     private boolean touchWall(int x, int y, Pair<Integer, Integer> dir) {
@@ -63,16 +64,14 @@ public class Solver {
 
     private final HashMap<Pair<Integer, Integer>, int[][]> heuristics = new HashMap<>();
 
+    private final List<Pair<Integer, Integer>> dirConverter = new ArrayList<>(Arrays.asList(
+            new Pair<>(0, -1), new Pair<>(-1, 0), new Pair<>(0, 1), new Pair<>(1, 0)));
+
     private void expand(Stack<Pair<Integer, Integer>> expandList, int[][] heuristic) {
         while (!expandList.isEmpty()) {
             Pair<Integer, Integer> pos = expandList.pop();
-            for (int direction = 1; direction <= 4; direction++) {
-                Pair<Integer, Integer> dir;
-                if (direction == 1) dir = new Pair<>(0, -1);
-                else if (direction == 2) dir = new Pair<>(-1, 0);
-                else if (direction == 3) dir = new Pair<>(0, 1);
-                else dir = new Pair<>(1, 0);
-
+            for (int direction = 0; direction < 4; direction++) {
+                Pair<Integer, Integer> dir = dirConverter.get(direction);
                 traverse(pos, dir, heuristic[pos.key()][pos.value()], expandList, heuristic);
             }
         }
@@ -98,35 +97,106 @@ public class Solver {
             }
     }
 
-    List<Pair<Integer, Integer>> ans;
-    // Return: List<Pair<colour, direction>> - <(blue, yellow, green, red), (left, up, right, down)>
+    // Return: List<Pair<colour, direction>> - <(blue, yellow, green, red, black), (left, up, right, down)>
     public List<Pair<Integer, Integer>> findSolution() {
-        int[][] robotPos = game.getRobotPos().clone(); // blue, yellow, green, red
         int goal = game.getGoal();
-
-        ans = new ArrayList<>();
-        int steps = 0;
-        while (true) {
-            int[][] robot = robotPos.clone();
-            if (backDFS(board, spec, robot, goal, steps)) break;
-            steps++;
+        Pair<Integer, Integer> goalPos = null;
+        int goalColour = (int)Math.floor((goal - 1.0) / 4);
+        if (goalColour > 3) goalColour = 4;
+        for (int i = 0; i < 16; i++) {
+            for (int j = 0; j < 16; j++)
+                if (spec[i][j] == goal) {
+                    goalPos = new Pair<>(i, j);
+                    break;
+                }
+            if (goalPos != null) break;
         }
-        return ans;
+
+        return AStar(game.getRobotPos(), goalPos, goalColour);
     }
 
-    private boolean backDFS(int[][] board, int[][] spec, int[][] robot, int goal, int steps) {
-        // test if the goal is reached
+    static class State implements Comparable<State>{
+        int weight;
+        int[][] robotPos;
+        List<Pair<Integer, Integer>> steps;
 
+        State(int weight, int[][] robotPos, List<Pair<Integer, Integer>> steps) {
+            this.weight = weight;
+            this.robotPos = robotPos;
+            this.steps = steps;
+        }
 
-        // move up
+        @Override
+        public int compareTo(State o) {
+            return Integer.compare(this.weight, o.weight);
+        }
+    }
 
-        // move down
+    private void move(int[][] robotPos, int colour, int direction) {
+        Pair<Integer, Integer> dir = dirConverter.get(direction);
 
-        // move left
+        while (true) {
+            // test wall collision
+            if (touchWall(robotPos[colour][0], robotPos[colour][1], dir))
+                return;
 
-        // move right
+            robotPos[colour][0] += dir.key();
+            robotPos[colour][1] += dir.value();
 
-        ans.add(new Pair<>(1, 2));
-        return false;
+            // test robot collision
+            for (int i = 0; i <= 4; i++)
+                if (i != colour)
+                    if (robotPos[colour][0] == robotPos[i][0] && robotPos[colour][1] == robotPos[i][1]) {
+                        robotPos[colour][0] -= dir.key();
+                        robotPos[colour][1] -= dir.value();
+                        return;
+                    }
+
+            if (spec[robotPos[colour][0]][robotPos[colour][1]] >= 17 &&
+                    spec[robotPos[colour][0]][robotPos[colour][1]] <= 24)
+                dir = lensReflect(robotPos[colour][0], robotPos[colour][1], dir);
+        }
+    }
+
+    // robotPos: blue, yellow, green, red, black
+    // <(0 blue, 1 yellow, 2 green, 3 red, 4 black), (0 left, 1 up, 2 right, 3 down)>
+    private List<Pair<Integer, Integer>> AStar(int[][] robotPos, Pair<Integer, Integer> goalPos, int goalColour) {
+        Queue<State> pq = new PriorityQueue<>();
+        pq.add(new State(
+                heuristics.get(new Pair<>(robotPos[goalColour][0], robotPos[goalColour][1]))
+                        [goalPos.key()][goalPos.value()],
+                robotPos, new ArrayList<>()));
+
+        while (!pq.isEmpty()) {
+            State state = pq.poll();
+
+            if (state.robotPos[goalColour][0] == goalPos.key() && state.robotPos[goalColour][1] == goalPos.value()) {
+                pq.clear();
+                return state.steps;
+            }
+
+            for (int colour = 0; colour <= 4; colour++)
+                for (int direction = 0; direction < 4; direction++) {
+                    if (!state.steps.isEmpty())
+                        if (state.steps.get(state.steps.size()-1).key() == colour &&
+                                state.steps.get(state.steps.size()-1).value() == (direction + 2) % 4)
+                            continue;
+
+                    int[][] robot = robotPos.clone();
+                    move(robot, colour, direction);
+                    List<Pair<Integer, Integer>> steps = new ArrayList<>(state.steps);
+                    steps.add(new Pair<>(colour, direction));
+
+                    if (colour != goalColour)
+                        pq.add(new State(state.weight + 1, robot, steps));
+                    else
+                        pq.add(new State(
+                                state.steps.size() + heuristics.get(new Pair<>(robot[colour][0], robot[colour][1]))
+                                        [goalPos.key()][goalPos.value()],
+                                robot, steps));
+                }
+        }
+
+        return null;
     }
 }

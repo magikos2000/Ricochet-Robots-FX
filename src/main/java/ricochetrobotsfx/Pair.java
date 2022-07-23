@@ -2,7 +2,7 @@ package ricochetrobotsfx;
 
 import java.util.Objects;
 
-public record Pair<K, V>(K key, V value) {
+public record Pair<K, V>(K key, V value){
 
     @Override
     public boolean equals(Object obj) {
