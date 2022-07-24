@@ -156,15 +156,21 @@ public class FeelingLucky {
         sol.append("----------\n");
         for (Pair<Integer, Integer> step: solution) {
             // blue, yellow, green, red
+
+            System.out.print(step.key());
+            System.out.print(", ");
             if (step.key() == 0)
-                sol.append("Blue: ");
+                sol.append("Blue:   ");
             else if (step.key() == 1)
                 sol.append("Yellow: ");
             else if (step.key() == 2)
-                sol.append("Green: ");
+                sol.append("Green:  ");
             else if (step.key() == 3)
-                sol.append("Red: ");
+                sol.append("Red:    ");
+            else if (step.key() == 4)
+                sol.append("Black:  ");
 
+            System.out.println(step.value());
             if (step.value() == 0)
                 sol.append("left\n");
             else if (step.value() == 1)

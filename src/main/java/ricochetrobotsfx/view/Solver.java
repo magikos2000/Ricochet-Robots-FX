@@ -78,6 +78,9 @@ public class Solver {
     }
 
     public void preprocess() {
+        heuristics.clear();
+        memorization.clear();
+
         board = game.getBoard(); // walls
         spec = game.getSpec(); // prism + goals
         Stack<Pair<Integer, Integer>> expandList = new Stack<>();
@@ -116,11 +119,11 @@ public class Solver {
     }
 
     static class State implements Comparable<State>{
-        int weight;
+        double weight;
         int[][] robotPos;
         List<Pair<Integer, Integer>> steps;
 
-        State(int weight, int[][] robotPos, List<Pair<Integer, Integer>> steps) {
+        State(double weight, int[][] robotPos, List<Pair<Integer, Integer>> steps) {
             this.weight = weight;
             this.robotPos = robotPos;
             this.steps = steps;
@@ -128,7 +131,9 @@ public class Solver {
 
         @Override
         public int compareTo(State o) {
-            return Integer.compare(this.weight, o.weight);
+            if (this.weight != o.weight)
+                return Double.compare(this.weight, o.weight);
+            return Integer.compare(this.steps.size(), o.steps.size());
         }
     }
 
@@ -158,6 +163,8 @@ public class Solver {
         }
     }
 
+    private Map<int[][], Integer> memorization = new HashMap<>();
+
     // robotPos: blue, yellow, green, red, black
     // <(0 blue, 1 yellow, 2 green, 3 red, 4 black), (0 left, 1 up, 2 right, 3 down)>
     private List<Pair<Integer, Integer>> AStar(int[][] robotPos, Pair<Integer, Integer> goalPos, int goalColour) {
@@ -167,8 +174,20 @@ public class Solver {
                         [goalPos.key()][goalPos.value()],
                 robotPos, new ArrayList<>()));
 
+        System.out.println(
+        heuristics.get(new Pair<>(15, 13))
+                [goalPos.key()][goalPos.value()]);
+
         while (!pq.isEmpty()) {
             State state = pq.poll();
+            memorization.put(state.robotPos, state.steps.size());
+//            System.out.println(state.steps.size());
+//            System.out.println(state.weight);
+//            System.out.println(Arrays.deepToString(state.robotPos));
+//            System.out.println(state.steps);
+            try {
+                //Thread.sleep(500);
+            } catch (Exception ignored) {}
 
             if (state.robotPos[goalColour][0] == goalPos.key() && state.robotPos[goalColour][1] == goalPos.value()) {
                 pq.clear();
@@ -181,19 +200,51 @@ public class Solver {
                         if (state.steps.get(state.steps.size()-1).key() == colour &&
                                 state.steps.get(state.steps.size()-1).value() == (direction + 2) % 4)
                             continue;
+                    if (touchWall(robotPos[colour][0], robotPos[colour][1], dirConverter.get(direction)))
+                        continue;
 
-                    int[][] robot = robotPos.clone();
+                    // int[][] robot = robotPos.clone();
+                    int[][] robot = new int[5][2];
+                    for (int i = 0 ;i <= 4; i++) {
+                        robot[i][0] = state.robotPos[i][0];
+                        robot[i][1] = state.robotPos[i][1];
+                    }
+                    //System.out.println(Arrays.deepToString(robot));
                     move(robot, colour, direction);
+                    //System.out.println(Arrays.deepToString(robot));
                     List<Pair<Integer, Integer>> steps = new ArrayList<>(state.steps);
                     steps.add(new Pair<>(colour, direction));
 
-                    if (colour != goalColour)
-                        pq.add(new State(state.weight + 1, robot, steps));
-                    else
-                        pq.add(new State(
-                                state.steps.size() + heuristics.get(new Pair<>(robot[colour][0], robot[colour][1]))
-                                        [goalPos.key()][goalPos.value()],
-                                robot, steps));
+                    if (!memorization.containsKey(robot) || memorization.get(robot) > steps.size()) {
+                        if (colour != goalColour) {
+                            pq.add(new State(state.weight + 1, robot, steps));
+                            memorization.put(robot, steps.size());
+                        } else
+                            pq.add(new State(
+                                    steps.size() - 0.1 + heuristics.get(new Pair<>(robot[colour][0], robot[colour][1]))
+                                            [goalPos.key()][goalPos.value()],
+                                    robot, steps));
+
+//                        if (steps.size()==1 && steps.get(0).key()==3 && steps.get(0).value()==3) {
+//                            System.out.println("Hey!!!!!");
+//                            System.out.println(state.steps.size());
+//                            System.out.println(heuristics.get(new Pair<>(robot[colour][0], robot[colour][1]))
+//                                    [goalPos.key()][goalPos.value()]);
+//                        }
+
+//                        if (colour == 3 && direction == 2) {
+//                            if (steps.size()==2 && steps.get(0).key()==3 && steps.get(0).value()==3
+//                                    && steps.get(1).key()==3 && steps.get(1).value()==2) {
+//                                System.out.println("Hey!!!");
+//                                System.out.println(steps.size());
+//                                System.out.println(robot[colour][0]);
+//                                System.out.println(robot[colour][1]);
+//                                System.out.println(Arrays.deepToString(robot));
+//                            System.out.println(heuristics.get(new Pair<>(robot[colour][0], robot[colour][1]))
+//                                    [goalPos.key()][goalPos.value()]);
+//                            }
+//                        }
+                    }
                 }
         }
 

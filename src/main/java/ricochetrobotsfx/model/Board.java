@@ -24,7 +24,7 @@ public class Board {
      */
     private final static int[][][] boardTemplates = { // 16 temp * 8 col * 8 row
             // 1A
-            {{5,6,5,2,2,2,2,2},{1,0,3,5,0,0,0,0},{1,0,0,0,0,0,0,0},{1,0,0,0,0,0,7,1},
+            {{5,6,5,10,2,2,2,2},{1,0,3,5,0,0,0,0},{1,0,0,0,0,0,0,0},{1,0,0,0,0,0,7,1},
                     {9,8,0,0,0,0,2,0},{1,2,0,0,4,0,0,0},{8,0,0,0,6,1,0,4},{5,0,0,0,0,0,3,5}},
             // 1B
             {{5,2,2,2,2,6,5,2},{1,0,0,0,0,0,0,0},{1,4,0,0,0,0,0,0},{9,5,0,0,0,0,0,0},
@@ -203,6 +203,12 @@ public class Board {
                     flag = false;
             } while (!flag);
 
+
+        // TODO: clear
+//        robotPos[3][0] = 14;
+//        robotPos[3][1] = 10;
+
+
         int[] parts = new int[]{
                 random.nextInt(4),
                 random.nextInt(4) + 4,
@@ -214,6 +220,13 @@ public class Board {
         if (random.nextInt(2) > 0) {temp = parts[1]; parts[1] = parts[2]; parts[2] = temp;}
         if (random.nextInt(2) > 0) {temp = parts[2]; parts[2] = parts[3]; parts[3] = temp;}
         if (random.nextInt(2) > 0) {temp = parts[3]; parts[3] = parts[0]; parts[0] = temp;}
+
+        // TODO: clear
+//        parts[0] = 6;
+//        parts[1] = 8;
+//        parts[2] = 0;
+//        parts[3] = 14;
+
 
         // generate board
         int[][] tempBoard = new int[8][8];
@@ -281,6 +294,10 @@ public class Board {
             goalsRemained[t1] = goalsRemained[t2];
             goalsRemained[t2] = tmp;
         }
+
+
+        // TODO: clear
+        //goalsRemained[0] = 13;
 
         solver.preprocess();
     }
