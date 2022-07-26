@@ -7,12 +7,12 @@ import java.util.List;
 import java.util.Random;
 
 public class Board {
-    private final int[][] board = new int[16][16]; // walls
-    private final int[][] spec = new int[16][16]; // prism + goals
-    private final int[][] robotPos = new int[5][2]; // blue, yellow, green, red
+    private final byte[][] board = new byte[16][16]; // walls
+    private final byte[][] spec = new byte[16][16]; // prism + goals
+    private final byte[][] robotPos = new byte[5][2]; // blue, yellow, green, red
     // 1~16 - goals: (blue, yellow, green, red) * (star, gear, ball, cross)
-    private int goalNo = 0;
-    private final int[] goalsRemained = new int[16];
+    private byte goalNo = 0;
+    private final byte[] goalsRemained = new byte[16];
 
     Solver solver = new Solver(this);
 
@@ -22,7 +22,7 @@ public class Board {
     5~8 - two-side wall: left+up, up+right, right+down, down+left;
     9~10 - opposite wall: left+right, up+down;
      */
-    private final static int[][][] boardTemplates = { // 16 temp * 8 col * 8 row
+    private final static byte[][][] boardTemplates = { // 16 temp * 8 col * 8 row
             // 1A
             {{5,6,5,10,2,2,2,2},{1,0,3,5,0,0,0,0},{1,0,0,0,0,0,0,0},{1,0,0,0,0,0,7,1},
                     {9,8,0,0,0,0,2,0},{1,2,0,0,4,0,0,0},{8,0,0,0,6,1,0,4},{5,0,0,0,0,0,3,5}},
@@ -85,7 +85,7 @@ public class Board {
         green: 21~22
         red: 23~24
      */
-    private final static int[][][] specTemplates = { // 16 temp * 8 col * 8 row
+    private final static byte[][][] specTemplates = { // 16 temp * 8 col * 8 row
             // 1A
             {{0,0,0,0,0,0,0,0},{0,0,0,10,0,0,0,0},{0,0,0,0,0,0,0,0},{0,0,0,0,0,0,8,0},
                     {0,15,0,0,0,0,0,0},{0,0,0,0,0,0,0,0},{0,0,0,0,1,0,0,0},{0,0,0,0,0,0,0,0}},
@@ -141,48 +141,48 @@ public class Board {
     };
 
     // rotate clockwise
-    private void rotateArray(int[][] board) {
-        int temp;
-        for (int i = 0; i < 7; i++)
-            for (int j = 0; j < 7-i; j++) {
+    private void rotateArray(byte[][] board) {
+        byte temp;
+        for (byte i = 0; i < 7; i++)
+            for (byte j = 0; j < 7-i; j++) {
                 temp = board[i][j];
                 board[i][j] = board[7-j][7-i];
                 board[7-j][7-i] = temp;
             }
 
-        for (int i = 0; i < 4; i++)
-            for (int j = 0; j < 8; j++) {
+        for (byte i = 0; i < 4; i++)
+            for (byte j = 0; j < 8; j++) {
                 temp = board[i][j];
                 board[i][j] = board[7-i][j];
                 board[7-i][j] = temp;
             }
     }
 
-    private final int[] matchTable = {0,2,3,4,1,6,7,8,5,10,9,0,0,0,0,0,0,18,17,20,19,22,21,24,23};
+    private final byte[] matchTable = {0,2,3,4,1,6,7,8,5,10,9,0,0,0,0,0,0,18,17,20,19,22,21,24,23};
 
-    private void rotateWall(int[][] board) {
-        for (int i = 0; i < 8; i++)
-            for (int j = 0; j < 8; j++)
+    private void rotateWall(byte[][] board) {
+        for (byte i = 0; i < 8; i++)
+            for (byte j = 0; j < 8; j++)
                 if (1 <= board[i][j] && board[i][j] <= 10)
                     board[i][j] = matchTable[board[i][j]];
     }
 
-    private void rotatePrism(int[][] spec) {
-        for (int i = 0; i < 8; i++)
-            for (int j = 0; j < 8; j++)
+    private void rotatePrism(byte[][] spec) {
+        for (byte i = 0; i < 8; i++)
+            for (byte j = 0; j < 8; j++)
                 if (17 <= spec[i][j] && spec[i][j] <= 24)
                     spec[i][j] = matchTable[spec[i][j]];
     }
 
-    private void rotateBoard(int[][] board, int times) {
-        for (int i = 0; i < times; i++) {
+    private void rotateBoard(byte[][] board, byte times) {
+        for (byte i = 0; i < times; i++) {
             rotateArray(board);
             rotateWall(board);
         }
     }
 
-    private void rotateSpec(int[][] spec, int times) {
-        for (int i = 0; i < times; i++) {
+    private void rotateSpec(byte[][] spec, byte times) {
+        for (byte i = 0; i < times; i++) {
             rotateArray(spec);
             rotatePrism(spec);
         }
@@ -191,13 +191,13 @@ public class Board {
     public void newRandomBoard() {
         Random random = new Random();
         boolean flag;
-        for (int i = 0; i < 5; i++)
+        for (byte i = 0; i < 5; i++)
             do {
                 flag = true;
-                robotPos[i][0] = random.nextInt(16);
-                robotPos[i][1] = random.nextInt(16);
+                robotPos[i][0] = (byte)random.nextInt(16);
+                robotPos[i][1] = (byte)random.nextInt(16);
 
-                for (int j = 0; j < i; j++)
+                for (byte j = 0; j < i; j++)
                     if (robotPos[i][0] == robotPos[j][0] && robotPos[i][1] == robotPos[j][1]) {
                         flag = false;
                         break;
@@ -206,80 +206,80 @@ public class Board {
                     flag = false;
             } while (!flag);
 
-        int[] parts = new int[]{
-                random.nextInt(4),
-                random.nextInt(4) + 4,
-                random.nextInt(4) + 8,
-                random.nextInt(4) + 12
+        byte[] parts = new byte[]{
+                (byte)random.nextInt(4),
+                (byte)(random.nextInt(4) + 4),
+                (byte)(random.nextInt(4) + 8),
+                (byte)(random.nextInt(4) + 12)
         };
-        int temp;
+        byte temp;
         if (random.nextInt(2) > 0) {temp = parts[0]; parts[0] = parts[1]; parts[1] = temp;}
         if (random.nextInt(2) > 0) {temp = parts[1]; parts[1] = parts[2]; parts[2] = temp;}
         if (random.nextInt(2) > 0) {temp = parts[2]; parts[2] = parts[3]; parts[3] = temp;}
         if (random.nextInt(2) > 0) {temp = parts[3]; parts[3] = parts[0]; parts[0] = temp;}
 
         // generate board
-        int[][] tempBoard = new int[8][8];
+        byte[][] tempBoard = new byte[8][8];
 
-        for (int i = 0; i < 8; i++)
+        for (byte i = 0; i < 8; i++)
             System.arraycopy(boardTemplates[parts[0]][i], 0, tempBoard[i], 0, 8);
-        rotateBoard(tempBoard, 0);
-        for (int i = 0; i < 8; i++)
+        rotateBoard(tempBoard, (byte)0);
+        for (byte i = 0; i < 8; i++)
             System.arraycopy(tempBoard[i], 0, board[i], 0, 8);
 
-        for (int i = 0; i < 8; i++)
+        for (byte i = 0; i < 8; i++)
             System.arraycopy(boardTemplates[parts[1]][i], 0, tempBoard[i], 0, 8);
-        rotateBoard(tempBoard, 1);
-        for (int i = 0; i < 8; i++)
+        rotateBoard(tempBoard, (byte)1);
+        for (byte i = 0; i < 8; i++)
             System.arraycopy(tempBoard[i], 0, board[i], 8, 8);
 
-        for (int i = 0; i < 8; i++)
+        for (byte i = 0; i < 8; i++)
             System.arraycopy(boardTemplates[parts[2]][i], 0, tempBoard[i], 0, 8);
-        rotateBoard(tempBoard, 2);
-        for (int i = 0; i < 8; i++)
+        rotateBoard(tempBoard, (byte)2);
+        for (byte i = 0; i < 8; i++)
             System.arraycopy(tempBoard[i], 0, board[i + 8], 8, 8);
 
-        for (int i = 0; i < 8; i++)
+        for (byte i = 0; i < 8; i++)
             System.arraycopy(boardTemplates[parts[3]][i], 0, tempBoard[i], 0, 8);
-        rotateBoard(tempBoard, 3);
-        for (int i = 0; i < 8; i++)
+        rotateBoard(tempBoard, (byte)3);
+        for (byte i = 0; i < 8; i++)
             System.arraycopy(tempBoard[i], 0, board[i + 8], 0, 8);
 
         // generate spec
-        for (int i = 0; i < 8; i++)
+        for (byte i = 0; i < 8; i++)
             System.arraycopy(specTemplates[parts[0]][i], 0, tempBoard[i], 0, 8);
-        rotateSpec(tempBoard, 0);
-        for (int i = 0; i < 8; i++)
+        rotateSpec(tempBoard, (byte)0);
+        for (byte i = 0; i < 8; i++)
             System.arraycopy(tempBoard[i], 0, spec[i], 0, 8);
 
-        for (int i = 0; i < 8; i++)
+        for (byte i = 0; i < 8; i++)
             System.arraycopy(specTemplates[parts[1]][i], 0, tempBoard[i], 0, 8);
-        rotateSpec(tempBoard, 1);
-        for (int i = 0; i < 8; i++)
+        rotateSpec(tempBoard, (byte)1);
+        for (byte i = 0; i < 8; i++)
             System.arraycopy(tempBoard[i], 0, spec[i], 8, 8);
 
-        for (int i = 0; i < 8; i++)
+        for (byte i = 0; i < 8; i++)
             System.arraycopy(specTemplates[parts[2]][i], 0, tempBoard[i], 0, 8);
-        rotateSpec(tempBoard, 2);
-        for (int i = 0; i < 8; i++)
+        rotateSpec(tempBoard, (byte)2);
+        for (byte i = 0; i < 8; i++)
             System.arraycopy(tempBoard[i], 0, spec[i + 8], 8, 8);
 
-        for (int i = 0; i < 8; i++)
+        for (byte i = 0; i < 8; i++)
             System.arraycopy(specTemplates[parts[3]][i], 0, tempBoard[i], 0, 8);
-        rotateSpec(tempBoard, 3);
-        for (int i = 0; i < 8; i++)
+        rotateSpec(tempBoard, (byte)3);
+        for (byte i = 0; i < 8; i++)
             System.arraycopy(tempBoard[i], 0, spec[i + 8], 0, 8);
 
         if (!fixBoardSeam(board)) newRandomBoard();
 
         goalNo = -1;
-        for (int i = 0; i < 16; i++)
-            goalsRemained[i] = i+1;
+        for (byte i = 0; i < 16; i++)
+            goalsRemained[i] = (byte)(i + 1);
 
-        for (int i = 0; i < 19; i++) {
-            int t1 = random.nextInt(16);
-            int t2 = random.nextInt(16);
-            int tmp = goalsRemained[t1];
+        for (byte i = 0; i < 19; i++) {
+            byte t1 = (byte)random.nextInt(16);
+            byte t2 = (byte)random.nextInt(16);
+            byte tmp = goalsRemained[t1];
             goalsRemained[t1] = goalsRemained[t2];
             goalsRemained[t2] = tmp;
         }
@@ -287,20 +287,20 @@ public class Board {
         solver.preprocess();
     }
 
-    public int getNextGoal() {
+    public byte getNextGoal() {
         solution = null;
         goalNo++;
         if (goalNo >= 16) return -1;
         return goalsRemained[goalNo];
     }
 
-    public int getGoal() {
+    public byte getGoal() {
         if (goalNo >= 16) return -1;
         return goalsRemained[goalNo];
     }
 
-    private boolean fixBoardSeam(int[][] board) {
-        for (int i = 0; i < 16; i++) {
+    private boolean fixBoardSeam(byte[][] board) {
+        for (byte i = 0; i < 16; i++) {
             if (board[i][7] == 3 || board[i][7] == 6 || board[i][7] == 7 || board[i][7] == 9) {
                 if (board[i][8] == 0) { board[i][8] = 1; continue; }
                 if (board[i][8] == 1) continue;
@@ -338,25 +338,25 @@ public class Board {
         return true;
     }
 
-    public int[][] getBoard() {
+    public byte[][] getBoard() {
         return board;
     }
 
-    public int[][] getSpec() {
+    public byte[][] getSpec() {
         return spec;
     }
 
-    public int[][] getRobotPos() {
+    public byte[][] getRobotPos() {
         return robotPos;
     }
 
-    List<Pair<Integer, Integer>> solution = null;
+    List<Pair<Byte, Byte>> solution = null;
 
     public void findSolution() {
         solution = solver.findSolution();
     }
 
-    public List<Pair<Integer, Integer>> getSolution() {
+    public List<Pair<Byte, Byte>> getSolution() {
         return solution;
     }
 }
