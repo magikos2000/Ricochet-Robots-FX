@@ -79,7 +79,7 @@ public class FeelingLucky {
         matchSpecImage.put(14, getImageResource("/gear/gearRed.png"));
         matchSpecImage.put(15, getImageResource("/ball/ballRed.png"));
         matchSpecImage.put(16, getImageResource("/cross/crossRed.png"));
-        matchSpecImage.put(25, getImageResource("/universal/universal.png"));
+        //matchSpecImage.put(25, getImageResource("/universal/universal.png"));
 
         matchSpecImage.put(17, getImageResource("/prism/prismLBlue.png"));
         matchSpecImage.put(18, getImageResource("/prism/prismRBlue.png"));
@@ -156,9 +156,6 @@ public class FeelingLucky {
         sol.append("----------\n");
         for (Pair<Integer, Integer> step: solution) {
             // blue, yellow, green, red
-
-            System.out.print(step.key());
-            System.out.print(", ");
             if (step.key() == 0)
                 sol.append("Blue:   ");
             else if (step.key() == 1)
@@ -170,7 +167,6 @@ public class FeelingLucky {
             else if (step.key() == 4)
                 sol.append("Black:  ");
 
-            System.out.println(step.value());
             if (step.value() == 0)
                 sol.append("left\n");
             else if (step.value() == 1)

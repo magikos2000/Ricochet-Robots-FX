@@ -10,9 +10,9 @@ public class Board {
     private final int[][] board = new int[16][16]; // walls
     private final int[][] spec = new int[16][16]; // prism + goals
     private final int[][] robotPos = new int[5][2]; // blue, yellow, green, red
-    // 1~16 - goals: (blue, yellow, green, red) * (star, gear, ball, cross), 25 - universal goal
+    // 1~16 - goals: (blue, yellow, green, red) * (star, gear, ball, cross)
     private int goalNo = 0;
-    private final int[] goalsRemained = new int[17];
+    private final int[] goalsRemained = new int[16];
 
     Solver solver = new Solver(this);
 
@@ -74,7 +74,6 @@ public class Board {
     };
 
     /*
-    25 - universal goal;
     1~16 - goals: (blue, yellow, green, red) * (star, gear, ball, cross)
         blue: 1~4
         yellow: 5~8
@@ -101,16 +100,20 @@ public class Board {
                     {0,0,0,0,0,0,0,0},{0,0,0,0,0,0,1,0},{0,0,0,15,0,0,0,0},{0,0,0,0,0,0,0,0}},
             // 2A
             {{0,0,0,0,0,0,0,0},{0,0,0,0,0,0,3,0},{0,0,0,0,0,0,0,0},{0,6,0,0,0,0,0,0},
-                    {0,0,0,0,0,9,0,0},{0,0,16,0,0,0,0,25},{0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0}},
+            //        {0,0,0,0,0,9,0,0},{0,0,16,0,0,0,0,25},{0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0}},
+                    {0,0,0,0,0,9,0,0},{0,0,16,0,0,0,0,0},{0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0}},
             // 2B
             {{0,0,0,0,0,0,0,0},{0,0,16,0,0,0,0,0},{0,0,0,0,0,0,0,0},{0,9,0,0,0,0,0,0},
-                    {0,0,0,0,0,0,6,0},{0,0,0,0,0,0,0,0},{0,0,0,0,0,3,0,0},{0,0,0,25,0,0,0,0}},
+            //        {0,0,0,0,0,0,6,0},{0,0,0,0,0,0,0,0},{0,0,0,0,0,3,0,0},{0,0,0,25,0,0,0,0}},
+                    {0,0,0,0,0,0,6,0},{0,0,0,0,0,0,0,0},{0,0,0,0,0,3,0,0},{0,0,0,0,0,0,0,0}},
             // 7A
-            {{0,0,0,0,0,0,0,0},{0,0,0,0,0,3,0,0},{0,0,0,0,0,0,0,25},{0,0,0,0,0,0,0,0},
+            {{0,0,0,0,0,0,0,0},{0,0,0,0,0,3,0,0},{0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0},
+            //{{0,0,0,0,0,0,0,0},{0,0,0,0,0,3,0,0},{0,0,0,0,0,0,0,25},{0,0,0,0,0,0,0,0},
                     {0,0,0,16,0,0,0,0},{0,0,0,0,0,0,9,0},{0,6,0,0,0,0,0,0},{0,0,0,0,0,0,0,0}},
             // 7B
             {{0,0,0,0,0,0,0,0},{0,0,24,0,0,0,0,0},{0,0,0,0,0,0,6,0},{0,0,3,9,0,0,0,0},
-                    {0,0,0,0,0,0,0,0},{0,16,0,0,0,0,0,0},{0,0,0,22,0,0,0,0},{0,0,0,0,0,25,0,0}},
+                    {0,0,0,0,0,0,0,0},{0,16,0,0,0,0,0,0},{0,0,0,22,0,0,0,0},{0,0,0,0,0,0,0,0}},
+            //        {0,0,0,0,0,0,0,0},{0,16,0,0,0,0,0,0},{0,0,0,22,0,0,0,0},{0,0,0,0,0,25,0,0}},
             // 3A
             {{0,0,0,0,0,0,0,0},{0,0,0,0,0,12,0,0},{0,13,0,0,0,0,0,0},{0,0,0,0,0,0,0,0},
                     {0,0,0,0,0,0,7,0},{0,0,0,0,0,0,0,0},{0,0,2,0,0,0,0,0},{0,0,0,0,0,0,0,0}},
@@ -203,12 +206,6 @@ public class Board {
                     flag = false;
             } while (!flag);
 
-
-        // TODO: clear
-//        robotPos[3][0] = 14;
-//        robotPos[3][1] = 10;
-
-
         int[] parts = new int[]{
                 random.nextInt(4),
                 random.nextInt(4) + 4,
@@ -220,13 +217,6 @@ public class Board {
         if (random.nextInt(2) > 0) {temp = parts[1]; parts[1] = parts[2]; parts[2] = temp;}
         if (random.nextInt(2) > 0) {temp = parts[2]; parts[2] = parts[3]; parts[3] = temp;}
         if (random.nextInt(2) > 0) {temp = parts[3]; parts[3] = parts[0]; parts[0] = temp;}
-
-        // TODO: clear
-//        parts[0] = 6;
-//        parts[1] = 8;
-//        parts[2] = 0;
-//        parts[3] = 14;
-
 
         // generate board
         int[][] tempBoard = new int[8][8];
@@ -285,19 +275,14 @@ public class Board {
         goalNo = -1;
         for (int i = 0; i < 16; i++)
             goalsRemained[i] = i+1;
-        goalsRemained[16] = 25;
 
         for (int i = 0; i < 19; i++) {
-            int t1 = random.nextInt(17);
-            int t2 = random.nextInt(17);
+            int t1 = random.nextInt(16);
+            int t2 = random.nextInt(16);
             int tmp = goalsRemained[t1];
             goalsRemained[t1] = goalsRemained[t2];
             goalsRemained[t2] = tmp;
         }
-
-
-        // TODO: clear
-        //goalsRemained[0] = 13;
 
         solver.preprocess();
     }
@@ -305,12 +290,12 @@ public class Board {
     public int getNextGoal() {
         solution = null;
         goalNo++;
-        if (goalNo > 16) return -1;
+        if (goalNo >= 16) return -1;
         return goalsRemained[goalNo];
     }
 
     public int getGoal() {
-        if (goalNo > 16) return -1;
+        if (goalNo >= 16) return -1;
         return goalsRemained[goalNo];
     }
 
